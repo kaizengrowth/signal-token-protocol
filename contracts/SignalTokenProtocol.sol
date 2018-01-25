@@ -1,6 +1,7 @@
 pragma solidity ^0.4.18;
 
 import './zeppelin/math/SafeMath.sol';
+import './SignalTokenDatastore.sol';
 
 interface ERC20 {
   function balanceOf(address who) public constant returns (uint);
@@ -14,16 +15,7 @@ interface ERC20 {
   event Approval(address indexed owner, address indexed spender, uint value);
 }
 
-contract SignalTokenProtocol {
-  struct Campaign {
-    address advertiser;
-    string title;
-    string description;
-    string contentUrl;
-    uint256 reward;
-    uint256 budget;
-  }
-
+contract SignalTokenProtocol is Ownable {
   event CampaignCreated(
     address indexed _advertiser,
     string _title,
@@ -35,13 +27,15 @@ contract SignalTokenProtocol {
     uint256 _reward
   );
 
-  mapping(uint256 => Campaign) public campaigns;
+  mapping(uint256 => SignalTokenDatastore.Campaign) public campaigns;
   uint256[] public campaignsTable;
 
   ERC20 public signalToken;
+  SignalTokenDatastore public signalTokenDatastore;
 
-  function SignalTokenProtocol(address _signalToken) public {
+  function SignalTokenProtocol(address _signalToken, address _signalTokenDatastore) public {
     signalToken = ERC20(_signalToken);
+    signalTokenDatastore = SignalTokenDatastore(_signalTokenDatastore);
   }
 
   function getCampaignsCount()
@@ -62,24 +56,17 @@ contract SignalTokenProtocol {
     public
     returns (uint256 campaignId)
   {
-    campaignId = campaignsTable.length++;
-    campaignsTable[campaignId] = campaignId;
-
-    campaigns[campaignId] = Campaign(
-      msg.sender,
-      title,
-      description,
-      contentUrl,
-      reward,
-      budget
+    campaignId = signalTokenDatastore.createCampaign(
+      title, description, contentUrl, reward, budget
     );
-
     CampaignCreated(msg.sender, title, reward);
+
     return campaignId;
   }
 
-  function getCampaign(uint256 campaignId)
+  function executeCampaign(uint256 campaignId, address publisher)
     public
+<<<<<<< HEAD
     view
     returns (
       address advertiser,
@@ -106,6 +93,12 @@ contract SignalTokenProtocol {
     returns (bool)
   {
     var campaign = campaigns[campaignId];
+=======
+    onlyOwner
+    returns (bool)
+  {
+    var campaign = signalTokenDatastore.getCampaign(campaignId);
+>>>>>>> Begin migration to new data contract
     assert(campaign.budget > campaign.reward);
 
     bool success = signalToken.transferFrom(campaign.advertiser, publisher, campaign.reward);
@@ -115,5 +108,9 @@ contract SignalTokenProtocol {
     }
 
     return success;
+<<<<<<< HEAD
   }
+=======
+  }  
+>>>>>>> Begin migration to new data contract
 }
