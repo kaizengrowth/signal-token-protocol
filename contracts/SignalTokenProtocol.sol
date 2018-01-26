@@ -113,26 +113,15 @@ contract SignalTokenProtocol {
     public
     returns (bool)
   {
-    Campaign storage campaign = campaigns[campaignId];
+    var campaign = campaigns[campaignId];
     assert(campaign.budget > campaign.reward);
-    bool success = executeTransfer(campaign, publisher);
-    if (success) {
-      CampaignExecuted(campaignId, publisher, campaign.reward);
-    }
-    return success;
-  }
 
-  function executeTransfer(
-    Campaign campaign,
-    address publisher
-  )
-    private
-    returns (bool)
-  {
     bool success = signalToken.transferFrom(campaign.advertiser, publisher, campaign.reward);
     if (success) {
       campaign.budget = SafeMath.sub(campaign.budget, campaign.reward);
+      CampaignExecuted(campaignId, publisher, campaign.reward);
     }
+
     return success;
-  }
+  }  
 }
