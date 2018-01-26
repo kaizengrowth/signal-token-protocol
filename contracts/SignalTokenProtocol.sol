@@ -14,6 +14,18 @@ contract SignalTokenProtocol {
     uint256 budget;
   }
 
+  event Faucet(address indexed _address, uint256 _amount);
+  event CampaignCreated(
+    address indexed _advertiser,
+    string _title,
+    uint256 _reward
+  );
+  event CampaignExecuted(
+    uint256 _campaignId,
+    address indexed _publisher,
+    uint256 _reward
+  );
+
   mapping(uint256 => Campaign) public campaigns;
   uint256[] public campaignsTable;
 
@@ -43,7 +55,9 @@ contract SignalTokenProtocol {
     public
     returns (bool)
   {
-    return signalToken.mint(msg.sender, 500000);
+    uint256 amount = 500000;
+    Faucet(msg.sender, amount);
+    return signalToken.mint(msg.sender, amount);
   }
 
   function createCampaign(
@@ -68,6 +82,7 @@ contract SignalTokenProtocol {
       budget
     );
 
+    CampaignCreated(msg.sender, title, reward);
     return campaignId;
   }
 
@@ -100,7 +115,11 @@ contract SignalTokenProtocol {
   {
     Campaign storage campaign = campaigns[campaignId];
     assert(campaign.budget > campaign.reward);
-    return executeTransfer(campaign, publisher);
+    bool success = executeTransfer(campaign, publisher);
+    if (success) {
+      CampaignExecuted(campaignId, publisher, campaign.reward);
+    }
+    return success;
   }
 
   function executeTransfer(
