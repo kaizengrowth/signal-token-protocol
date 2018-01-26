@@ -1,6 +1,7 @@
 pragma solidity ^0.4.18;
 
 import './SignalToken.sol';
+import './zeppelin/math/SafeMath.sol';
 
 
 contract SignalTokenProtocol {
@@ -80,8 +81,7 @@ contract SignalTokenProtocol {
       string contentUrl,
       uint256 reward,
       uint256 budget
-    )
-  {
+    ) {
     Campaign storage campaign = campaigns[campaignId];
 
     advertiser = campaign.advertiser;
@@ -99,17 +99,21 @@ contract SignalTokenProtocol {
     returns (bool)
   {
     Campaign storage campaign = campaigns[campaignId];
-    return executeTransfer(campaign.advertiser, publisher, campaign.reward);
+    assert(campaign.budget > campaign.reward);
+    return executeTransfer(campaign, publisher);
   }
 
   function executeTransfer(
-    address advertiser,
-    address publisher,
-    uint256 reward
+    Campaign campaign,
+    address publisher
   )
     private
     returns (bool)
   {
-    return signalToken.transferFrom(advertiser, publisher, reward);
+    bool success = signalToken.transferFrom(campaign.advertiser, publisher, campaign.reward);
+    if (success) {
+      campaign.budget = SafeMath.sub(campaign.budget, campaign.reward);
+    }
+    return success;
   }
 }
