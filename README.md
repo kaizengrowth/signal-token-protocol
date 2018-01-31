@@ -15,6 +15,13 @@ development and testing purposes.
 
 * [truffle](https://truffleframework.com)
 
+### Setup
+
+```sh
+# Copy the config.js.example file into config.js, and fill it out appropriately
+$ cp config.js.example config.js
+```
+
 ### Installing
 
 After cloning this repository and installing the above dependencies, from the project directory
