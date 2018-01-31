@@ -67,3 +67,6 @@ typings/
 
 # Truffle build path
 build/
+
+#configurations
+config.js
