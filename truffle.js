@@ -1,5 +1,5 @@
-import INFURA_API_KEY from './config'
-import MNEMONIC from './config'
+const { INFURA_API_KEY } =require('./config');
+const { MNEMONIC } = require('./config');
 
 var HDWalletProvider = require("truffle-hdwallet-provider");
 
