@@ -2,7 +2,7 @@ pragma solidity ^0.4.18;
 
 import './zeppelin/math/SafeMath.sol';
 
-interface SignalToken {
+interface ERC20 {
   function balanceOf(address who) public constant returns (uint);
   function allowance(address owner, address spender) public constant returns (uint);
 
@@ -38,10 +38,10 @@ contract SignalTokenProtocol {
   mapping(uint256 => Campaign) public campaigns;
   uint256[] public campaignsTable;
 
-  SignalToken public signalToken;
+  ERC20 public signalToken;
 
   function SignalTokenProtocol(address _signalToken) public {
-    signalToken = SignalToken(_signalToken);
+    signalToken = ERC20(_signalToken);
   }
 
   function getCampaignsCount()
