@@ -13,7 +13,11 @@ contract("SignalTokenProtocol", function(accounts) {
   let budget;
 
   beforeEach(function() {
-    return SignalTokenProtocol.new()
+    return SignalToken.new()
+    .then(sigInstance => {
+      signalToken = sigInstance;
+      return SignalTokenProtocol.new(sigInstance);
+    })
     .then(function(instance) {
       signalTokenProtocol = instance;
       advertiser = accounts[1];
@@ -22,41 +26,11 @@ contract("SignalTokenProtocol", function(accounts) {
       contentUrl = "www.ethereum.org";
       reward = 42;
       budget = 420;
-      return signalTokenProtocol.signalToken();
-    })
-    .then(function(signalTokenAddress) {
-      signalToken = SignalToken.at(signalTokenAddress);
     });
   });
 
   it("should pass a dummy test", function() {
     assert.equal(true, true, "the dummy test failed");
-  });
-
-  it("should allow public access to faucet signal tokens", function() {
-    const faucetAmount = 500000;
-
-    const recipient = accounts[1];
-    let recipientStartingBalance;
-    let recipientEndingBalance;
-
-    return signalToken.balanceOf(recipient)
-    .then(function(balance) {
-      recipientStartingBalance = balance.toNumber();
-      return signalTokenProtocol.faucet({ from: recipient });
-    })
-    .then(function(transfer) {
-      return signalToken.balanceOf(recipient);
-    })
-    .then(function(balance) {
-      recipientEndingBalance = balance.toNumber();
-
-      assert.equal(
-        recipientEndingBalance,
-        recipientStartingBalance + 500000,
-        "the recipient's account balance was not increased by 500,000"
-      );
-    });
   });
 
   it("should allow an advertiser to create a campaign", function() {

@@ -1,9 +1,24 @@
+const { INFURA_API_KEY } =require('./config');
+const { MNEMONIC } = require('./config');
+
+var HDWalletProvider = require("truffle-hdwallet-provider");
+
 module.exports = {
   networks: {
-    "ropsten": {
-      network_id: 1,
+    development: {
+      network_id: 5777,
       host: "localhost",
       port: 8545
+    },
+    ropsten: {
+      provider: new HDWalletProvider(MNEMONIC, "https://ropsten.infura.io/" + INFURA_API_KEY),
+      network_id: 3,
+      gas: 3000000
+    },
+    live: {
+      provider: new HDWalletProvider(MNEMONIC, "https://mainnet.infura.io/" + INFURA_API_KEY),
+      network_id: 1,
+      gas: 3000000
     }
   }
 };

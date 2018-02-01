@@ -1,8 +1,18 @@
 pragma solidity ^0.4.18;
 
-import './SignalToken.sol';
 import './zeppelin/math/SafeMath.sol';
 
+interface SignalToken {
+  function balanceOf(address who) public constant returns (uint);
+  function allowance(address owner, address spender) public constant returns (uint);
+
+  function transfer(address to, uint value) public returns (bool ok);
+  function transferFrom(address from, address to, uint value) public returns (bool ok);
+  function approve(address spender, uint value) public returns (bool ok);
+
+  event Transfer(address indexed from, address indexed to, uint value);
+  event Approval(address indexed owner, address indexed spender, uint value);
+}
 
 contract SignalTokenProtocol {
   struct Campaign {
@@ -14,25 +24,24 @@ contract SignalTokenProtocol {
     uint256 budget;
   }
 
-  event Faucet(address indexed _address, uint256 _amount);
   event CampaignCreated(
     address indexed _advertiser,
     string _title,
     uint256 _reward
   );
-  event CampaignExecuted(
-    uint256 _campaignId,
-    address indexed _publisher,
-    uint256 _reward
-  );
+  // event CampaignExecuted(
+  //   uint256 _campaignId,
+  //   address indexed _publisher,
+  //   uint256 _reward
+  // );
 
   mapping(uint256 => Campaign) public campaigns;
   uint256[] public campaignsTable;
 
   SignalToken public signalToken;
 
-  function SignalTokenProtocol() public {
-    signalToken = new SignalToken(this);
+  function SignalTokenProtocol(address _signalToken) public {
+    signalToken = SignalToken(_signalToken);
   }
 
   function getCampaignsCount()
@@ -41,23 +50,6 @@ contract SignalTokenProtocol {
     returns (uint256)
   {
     return campaignsTable.length;
-  }
-
-  function getSignalTokenAddress()
-    public
-    constant
-    returns (SignalToken)
-  {
-    return signalToken;
-  }
-
-  function faucet()
-    public
-    returns (bool)
-  {
-    uint256 amount = 500000;
-    Faucet(msg.sender, amount);
-    return signalToken.mint(msg.sender, amount);
   }
 
   function createCampaign(
@@ -109,19 +101,19 @@ contract SignalTokenProtocol {
     return (advertiser, title, description, contentUrl, reward, budget);
   }
 
-  function executeCampaign(uint256 campaignId, address publisher)
-    public
-    returns (bool)
-  {
-    var campaign = campaigns[campaignId];
-    assert(campaign.budget > campaign.reward);
+  // function executeCampaign(uint256 campaignId, address publisher)
+  //   public
+  //   returns (bool)
+  // {
+  //   var campaign = campaigns[campaignId];
+  //   assert(campaign.budget > campaign.reward);
 
-    bool success = signalToken.transferFrom(campaign.advertiser, publisher, campaign.reward);
-    if (success) {
-      campaign.budget = SafeMath.sub(campaign.budget, campaign.reward);
-      CampaignExecuted(campaignId, publisher, campaign.reward);
-    }
+  //   bool success = signalToken.transferFrom(campaign.advertiser, publisher, campaign.reward);
+  //   if (success) {
+  //     campaign.budget = SafeMath.sub(campaign.budget, campaign.reward);
+  //     CampaignExecuted(campaignId, publisher, campaign.reward);
+  //   }
 
-    return success;
-  }  
+  //   return success;
+  // }
 }
