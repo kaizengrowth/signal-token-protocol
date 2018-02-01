@@ -29,11 +29,11 @@ contract SignalTokenProtocol {
     string _title,
     uint256 _reward
   );
-  // event CampaignExecuted(
-  //   uint256 _campaignId,
-  //   address indexed _publisher,
-  //   uint256 _reward
-  // );
+  event CampaignExecuted(
+    uint256 _campaignId,
+    address indexed _publisher,
+    uint256 _reward
+  );
 
   mapping(uint256 => Campaign) public campaigns;
   uint256[] public campaignsTable;
@@ -101,19 +101,19 @@ contract SignalTokenProtocol {
     return (advertiser, title, description, contentUrl, reward, budget);
   }
 
-  // function executeCampaign(uint256 campaignId, address publisher)
-  //   public
-  //   returns (bool)
-  // {
-  //   var campaign = campaigns[campaignId];
-  //   assert(campaign.budget > campaign.reward);
+  function executeCampaign(uint256 campaignId, address publisher)
+    public
+    returns (bool)
+  {
+    var campaign = campaigns[campaignId];
+    assert(campaign.budget > campaign.reward);
 
-  //   bool success = signalToken.transferFrom(campaign.advertiser, publisher, campaign.reward);
-  //   if (success) {
-  //     campaign.budget = SafeMath.sub(campaign.budget, campaign.reward);
-  //     CampaignExecuted(campaignId, publisher, campaign.reward);
-  //   }
+    bool success = signalToken.transferFrom(campaign.advertiser, publisher, campaign.reward);
+    if (success) {
+      campaign.budget = SafeMath.sub(campaign.budget, campaign.reward);
+      CampaignExecuted(campaignId, publisher, campaign.reward);
+    }
 
-  //   return success;
-  // }
+    return success;
+  }
 }
