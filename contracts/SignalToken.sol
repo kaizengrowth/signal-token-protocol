@@ -9,8 +9,8 @@ contract SignalToken is MintableToken {
   string public version = "1.0";
   uint8 public constant decimals = 18;
 
-  function SignalToken(address _address) public {
-    owner = _address;
+  function SignalToken() public {
+    owner = msg.sender;
     mint(msg.sender, 1000000);
   }
 }

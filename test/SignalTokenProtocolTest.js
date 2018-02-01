@@ -13,7 +13,11 @@ contract("SignalTokenProtocol", function(accounts) {
   let budget;
 
   beforeEach(function() {
-    return SignalTokenProtocol.new()
+    return SignalToken.new()
+    .then(sigInstance => {
+      signalToken = sigInstance;
+      return SignalTokenProtocol.new(sigInstance);
+    })
     .then(function(instance) {
       signalTokenProtocol = instance;
       advertiser = accounts[1];
@@ -22,10 +26,6 @@ contract("SignalTokenProtocol", function(accounts) {
       contentUrl = "www.ethereum.org";
       reward = 42;
       budget = 420;
-      return signalTokenProtocol.signalToken();
-    })
-    .then(function(signalTokenAddress) {
-      signalToken = SignalToken.at(signalTokenAddress);
     });
   });
 

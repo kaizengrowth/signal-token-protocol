@@ -1,8 +1,18 @@
 pragma solidity ^0.4.18;
 
-import './SignalToken.sol';
 import './zeppelin/math/SafeMath.sol';
 
+interface SignalToken {
+  function balanceOf(address who) public constant returns (uint);
+  function allowance(address owner, address spender) public constant returns (uint);
+
+  function transfer(address to, uint value) public returns (bool ok);
+  function transferFrom(address from, address to, uint value) public returns (bool ok);
+  function approve(address spender, uint value) public returns (bool ok);
+
+  event Transfer(address indexed from, address indexed to, uint value);
+  event Approval(address indexed owner, address indexed spender, uint value);
+}
 
 contract SignalTokenProtocol {
   struct Campaign {
@@ -30,8 +40,8 @@ contract SignalTokenProtocol {
 
   SignalToken public signalToken;
 
-  function SignalTokenProtocol() public {
-    signalToken = new SignalToken(this);
+  function SignalTokenProtocol(address _signalToken) public {
+    signalToken = SignalToken(_signalToken);
   }
 
   function getCampaignsCount()
@@ -40,14 +50,6 @@ contract SignalTokenProtocol {
     returns (uint256)
   {
     return campaignsTable.length;
-  }
-
-  function getSignalTokenAddress()
-    public
-    constant
-    returns (SignalToken)
-  {
-    return signalToken;
   }
 
   function createCampaign(
