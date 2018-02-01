@@ -33,32 +33,6 @@ contract("SignalTokenProtocol", function(accounts) {
     assert.equal(true, true, "the dummy test failed");
   });
 
-  it("should allow public access to faucet signal tokens", function() {
-    const faucetAmount = 500000;
-
-    const recipient = accounts[1];
-    let recipientStartingBalance;
-    let recipientEndingBalance;
-
-    return signalToken.balanceOf(recipient)
-    .then(function(balance) {
-      recipientStartingBalance = balance.toNumber();
-      return signalTokenProtocol.faucet({ from: recipient });
-    })
-    .then(function(transfer) {
-      return signalToken.balanceOf(recipient);
-    })
-    .then(function(balance) {
-      recipientEndingBalance = balance.toNumber();
-
-      assert.equal(
-        recipientEndingBalance,
-        recipientStartingBalance + 500000,
-        "the recipient's account balance was not increased by 500,000"
-      );
-    });
-  });
-
   it("should allow an advertiser to create a campaign", function() {
     let campaignsCountStarting;
     let campaignsCountEnding;

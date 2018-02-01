@@ -14,7 +14,6 @@ contract SignalTokenProtocol {
     uint256 budget;
   }
 
-  event Faucet(address indexed _address, uint256 _amount);
   event CampaignCreated(
     address indexed _advertiser,
     string _title,
@@ -49,15 +48,6 @@ contract SignalTokenProtocol {
     returns (SignalToken)
   {
     return signalToken;
-  }
-
-  function faucet()
-    public
-    returns (bool)
-  {
-    uint256 amount = 500000;
-    Faucet(msg.sender, amount);
-    return signalToken.mint(msg.sender, amount);
   }
 
   function createCampaign(

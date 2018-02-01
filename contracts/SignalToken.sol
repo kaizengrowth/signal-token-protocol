@@ -11,5 +11,6 @@ contract SignalToken is MintableToken {
 
   function SignalToken(address _address) public {
     owner = _address;
+    mint(msg.sender, 1000000);
   }
 }
