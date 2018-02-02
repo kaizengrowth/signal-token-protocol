@@ -4,13 +4,14 @@ import './zeppelin/token/MintableToken.sol';
 
 
 contract SignalToken is MintableToken {
-  string public constant name = "Signal Token";
-  string public constant symbol = "SIG";
+  string public name = "Signal Token";
+  string public symbol = "SIG";
   string public version = "1.0";
-  uint8 public constant decimals = 18;
+  uint256 public decimals = 18;
 
   function SignalToken() public {
     owner = msg.sender;
-    mint(msg.sender, 1000000);
+    uint256 initialMint = 1000000 * (10**decimals);
+    mint(msg.sender, initialMint);
   }
 }
