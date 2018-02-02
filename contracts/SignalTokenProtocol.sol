@@ -15,7 +15,7 @@ interface ERC20 {
   event Approval(address indexed owner, address indexed spender, uint value);
 }
 
-contract SignalTokenProtocol is Ownable {
+contract SignalTokenProtocol {
   event CampaignCreated(
     address indexed _advertiser,
     string _title,
@@ -66,39 +66,9 @@ contract SignalTokenProtocol is Ownable {
 
   function executeCampaign(uint256 campaignId, address publisher)
     public
-<<<<<<< HEAD
-    view
-    returns (
-      address advertiser,
-      string title,
-      string description,
-      string contentUrl,
-      uint256 reward,
-      uint256 budget
-    ) {
-    Campaign storage campaign = campaigns[campaignId];
-
-    advertiser = campaign.advertiser;
-    title = campaign.title;
-    description = campaign.description;
-    contentUrl = campaign.contentUrl;
-    reward = campaign.reward;
-    budget = campaign.budget;
-
-    return (advertiser, title, description, contentUrl, reward, budget);
-  }
-
-  function executeCampaign(uint256 campaignId, address publisher)
-    public
-    returns (bool)
-  {
-    var campaign = campaigns[campaignId];
-=======
-    onlyOwner
     returns (bool)
   {
     var campaign = signalTokenDatastore.getCampaign(campaignId);
->>>>>>> Begin migration to new data contract
     assert(campaign.budget > campaign.reward);
 
     bool success = signalToken.transferFrom(campaign.advertiser, publisher, campaign.reward);
@@ -108,9 +78,5 @@ contract SignalTokenProtocol is Ownable {
     }
 
     return success;
-<<<<<<< HEAD
   }
-=======
-  }  
->>>>>>> Begin migration to new data contract
 }
