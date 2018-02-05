@@ -105,6 +105,16 @@ contract SignalTokenProtocol {
     return (advertiser, title, description, contentUrl, reward, budget);
   }
 
+  function deleteCampaign(uint256 campaignId)
+    public
+    returns (bool)
+  {
+    var campaign = campaigns[campaignId];
+    assert(campaign.advertiser == msg.sender);
+    delete campaigns[campaignId];
+    return true;
+  }
+
   function executeCampaign(uint256 campaignId, address publisher)
     public
     returns (bool)
