@@ -62,6 +62,10 @@ contract SignalTokenProtocol {
     public
     returns (uint256 campaignId)
   {
+    assert(bytes(title).length > 0);
+    assert(bytes(contentUrl).length > 0);
+    assert(budget > reward);
+
     campaignId = campaignsTable.length++;
     campaignsTable[campaignId] = campaignId;
 
