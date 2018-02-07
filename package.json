@@ -1,6 +1,6 @@
 {
   "name": "signal-token-protocol",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Signal, the smart contract advertising token.",
   "main": "index.js",
   "repository": "https://gitlab.com/decent-technologies/clients/spectiv/signal-token-protocol.git",
