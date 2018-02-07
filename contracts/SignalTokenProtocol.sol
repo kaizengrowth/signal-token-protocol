@@ -24,16 +24,9 @@ contract SignalTokenProtocol {
     uint256 budget;
   }
 
-  event CampaignCreated(
-    address indexed _advertiser,
-    string _title,
-    uint256 _reward
-  );
-  event CampaignExecuted(
-    uint256 _campaignId,
-    address indexed _publisher,
-    uint256 _reward
-  );
+  event CampaignCreated(address indexed _advertiser, string _title, uint256 _reward);
+  event CampaignExecuted(uint256 _campaignId, address indexed _publisher, uint256 _reward);
+  event CampaignDeleted(uint256 _campaignId);
 
   mapping(uint256 => Campaign) public campaigns;
   uint256[] public campaignsTable;
@@ -62,6 +55,10 @@ contract SignalTokenProtocol {
     public
     returns (uint256 campaignId)
   {
+    assert(bytes(title).length > 0);
+    assert(bytes(contentUrl).length > 0);
+    assert(budget >= reward);
+
     campaignId = campaignsTable.length++;
     campaignsTable[campaignId] = campaignId;
 
@@ -99,6 +96,17 @@ contract SignalTokenProtocol {
     budget = campaign.budget;
 
     return (advertiser, title, description, contentUrl, reward, budget);
+  }
+
+  function deleteCampaign(uint256 campaignId)
+    public
+    returns (bool)
+  {
+    var campaign = campaigns[campaignId];
+    assert(campaign.advertiser == msg.sender);
+    delete campaigns[campaignId];
+    CampaignDeleted(campaignId);
+    return true;
   }
 
   function executeCampaign(uint256 campaignId, address publisher)
