@@ -57,7 +57,7 @@ contract SignalTokenProtocol {
   {
     assert(bytes(title).length > 0);
     assert(bytes(contentUrl).length > 0);
-    assert(budget > reward);
+    assert(budget >= reward);
 
     campaignId = campaignsTable.length++;
     campaignsTable[campaignId] = campaignId;
